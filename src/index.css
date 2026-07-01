@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg: 11 14 20;        /* #0B0E14 */
+  --surface: 17 21 28;   /* #11151C */
+  --ink: 230 232 235;    /* #E6E8EB */
+  --line: 30 35 44;      /* #1E232C */
+  --mint: 69 224 196;    /* #45E0C4 */
+}
+
+html.light {
+  color-scheme: light;
+  --bg: 246 245 241;     /* #F6F5F1 */
+  --surface: 255 255 255;/* #FFFFFF */
+  --ink: 21 23 28;       /* #15171C */
+  --line: 224 221 213;   /* light hairline */
+  --mint: 17 138 117;    /* darker teal for contrast on white */
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-bg text-ink font-body antialiased transition-colors duration-300;
+  background-image: linear-gradient(rgba(124,92,252,0.05) 1px, transparent 1px),
+                     linear-gradient(90deg, rgba(124,92,252,0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+html.light body {
+  background-image: linear-gradient(rgba(124,92,252,0.07) 1px, transparent 1px),
+                     linear-gradient(90deg, rgba(124,92,252,0.07) 1px, transparent 1px);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #7C5CFC55; border-radius: 8px; }
+
+.glass {
+  @apply bg-bg-surface/70 backdrop-blur-xl border border-line;
+}
+
+.section-pad {
+  @apply px-6 md:px-12 lg:px-24 py-24 md:py-32;
+}
+
+.eyebrow {
+  @apply font-mono text-xs uppercase tracking-[0.25em] text-accent-mint;
+}
+
+.cursor-blink::after {
+  content: '_';
+  animation: blink 1s steps(1) infinite;
+  color: #7C5CFC;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #7C5CFC, #45E0C4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
