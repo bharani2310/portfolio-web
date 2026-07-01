@@ -9,6 +9,7 @@ import AdminProjects from './pages/admin/AdminProjects.jsx';
 import AdminMessages from './pages/admin/AdminMessages.jsx';
 import AdminPassword from './pages/admin/AdminPassword.jsx';
 import ProtectedRoute from './pages/admin/components/ProtectedRoute.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="messages" element={<AdminMessages />} />
         <Route path="password" element={<AdminPassword />} />
       </Route>
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
