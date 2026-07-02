@@ -55,6 +55,14 @@ export default function AdminLayout() {
 
         <div className="hidden md:flex flex-col gap-1 mt-6 pt-6 border-t border-line">
           <a
+            href={import.meta.env.VITE_API_DOC_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg font-mono text-sm text-ink/60 hover:text-ink hover:bg-line/30"
+          >
+            <FiExternalLink size={16} /> View API Docs
+          </a>
+          <a
             href="/"
             target="_blank"
             rel="noreferrer"

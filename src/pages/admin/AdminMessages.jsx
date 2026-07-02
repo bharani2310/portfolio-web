@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FiTrash2, FiArrowLeft } from 'react-icons/fi';
+import { FiRefreshCcw,FiTrash2, FiArrowLeft } from 'react-icons/fi';
 import useFetch from '../../hooks/useFetch';
 import { adminContactService } from '../../services/adminService';
 import { useToasts, ToastContainer } from './components/Toast.jsx';
+import {flushContacts} from '../../api/flushContacts.js';
 
 function getTime(msg) {
   return new Date(msg.createdDate || msg.createdAt).getTime();
@@ -218,16 +219,31 @@ export default function AdminMessages() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div>
-          <h2 className="font-display font-bold text-2xl mb-1">Messages</h2>
-          <p className="text-ink/50 text-sm">Submissions from your Contact form.</p>
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="font-display font-bold text-2xl">
+            Messages
+          </h2>
+
+           <button
+            onClick={() => flushContacts().then(() => refetch(true)).catch((err) => toast.error(err.message || 'Failed to flush contacts.'))}
+            className="p-1.5 rounded-full text-ink/60 hover:text-accent-mint hover:bg-line/30 transition-colors"
+            title="Refresh"
+            aria-label="Refresh messages"
+          >
+            <FiRefreshCcw size={18} />
+          </button>
+
+          {totalUnread > 0 && (
+            <span className="ml-2 min-w-[24px] h-6 px-2 rounded-full bg-accent-mint text-bg text-xs font-bold flex items-center justify-center">
+              {totalUnread} unread
+            </span>
+          )}
         </div>
-        {totalUnread > 0 && (
-          <span className="ml-auto shrink-0 min-w-[24px] h-6 px-2 rounded-full bg-accent-mint text-bg text-xs font-bold flex items-center justify-center">
-            {totalUnread} unread
-          </span>
-        )}
+
+        <p className="text-ink/50 text-sm">
+          Submissions from your Contact form.
+        </p>
       </div>
 
       {loading && <p className="text-ink/50 font-mono text-sm">Loading...</p>}
