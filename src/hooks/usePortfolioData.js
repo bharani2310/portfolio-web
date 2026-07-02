@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../api/axios';
+import dataApi from '../api/dataApi';
 
 const CACHE_KEY = 'portfolio_all_data';
 const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
@@ -43,7 +43,7 @@ export function usePortfolioData() {
 
     let cancelled = false;
     setLoading(true);
-    api
+    dataApi
       .get('/all')
       .then((res) => {
         if (cancelled) return;
