@@ -183,7 +183,7 @@ export default function AdminMessages() {
     if (convo.unreadCount > 0) {
       try {
         await adminContactService.markConversationRead(convo.email);
-        refetch();
+        refetch(true); // silent — don't flash the whole panel to "Loading..."
       } catch {
         // Non-critical — the messages are still viewable even if the
         // read-state update fails, so we don't interrupt with a toast.
@@ -196,7 +196,7 @@ export default function AdminMessages() {
     setDeletingId(id);
     try {
       await adminContactService.remove(id);
-      await refetch();
+      await refetch(true);
       toast.success('Message deleted.');
     } catch (err) {
       toast.error(err.message || 'Failed to delete message.');
@@ -209,7 +209,7 @@ export default function AdminMessages() {
     if (!confirm('Delete this entire conversation? This cannot be undone.')) return;
     try {
       await adminContactService.removeConversation(email);
-      await refetch();
+      await refetch(true);
       toast.success('Conversation deleted.');
     } catch (err) {
       toast.error(err.message || 'Failed to delete conversation.');

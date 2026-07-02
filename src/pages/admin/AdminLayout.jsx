@@ -27,7 +27,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <aside className="md:w-64 shrink-0 glass md:min-h-screen p-5 flex md:flex-col gap-2 overflow-x-auto md:overflow-visible border-b md:border-b-0 md:border-r border-line">
+      <aside className="md:w-64 shrink-0 glass md:sticky md:top-0 md:h-screen md:overflow-y-auto p-5 flex md:flex-col gap-2 overflow-x-auto border-b md:border-b-0 md:border-r border-line">
         <h1 className="hidden md:block font-display font-bold text-xl mb-6">
           <span className="text-ink">&lt;</span>
           <span className="gradient-text">Admin</span>
