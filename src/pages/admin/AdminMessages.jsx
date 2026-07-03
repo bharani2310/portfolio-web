@@ -164,6 +164,7 @@ export default function AdminMessages() {
   const { data: messages, loading, refetch } = useFetch(adminContactService.getAll, []);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [flushing, setFlushing] = useState(false);
   const toast = useToasts();
 
   const conversations = useMemo(() => groupConversations(messages || []), [messages]);
@@ -189,6 +190,27 @@ export default function AdminMessages() {
         // Non-critical — the messages are still viewable even if the
         // read-state update fails, so we don't interrupt with a toast.
       }
+    }
+  };
+
+  const handleFlush = async () => {
+    if (flushing) return; // already in flight — ignore double-clicks
+    setFlushing(true);
+    try {
+      const { flushed, remaining } = await flushContacts();
+      await refetch(true);
+      if (flushed > 0) {
+        toast.success(
+          `New ${flushed} message${flushed === 1 ? '' : 's'}.` +
+            (remaining > 0 ? ` ${remaining} still pending to receive.` : '')
+        );
+      } else {
+        toast.success('No pending messages.');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to Refresh.');
+    } finally {
+      setFlushing(false);
     }
   };
 
@@ -225,13 +247,14 @@ export default function AdminMessages() {
             Messages
           </h2>
 
-           <button
-            onClick={() => flushContacts().then(() => refetch(true)).catch((err) => toast.error(err.message || 'Failed to flush contacts.'))}
-            className="p-1.5 rounded-full text-ink/60 hover:text-accent-mint hover:bg-line/30 transition-colors"
+          <button
+            onClick={handleFlush}
+            disabled={flushing}
+            className="p-1.5 rounded-full text-ink/60 hover:text-accent-mint hover:bg-line/30 transition-colors disabled:opacity-50 disabled:pointer-events-none"
             title="Refresh"
             aria-label="Refresh messages"
           >
-            <FiRefreshCcw size={18} />
+            <FiRefreshCcw size={18} className={flushing ? 'animate-spin' : ''} />
           </button>
 
           {totalUnread > 0 && (
