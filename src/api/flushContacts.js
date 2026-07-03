@@ -1,7 +1,7 @@
 export async function flushContacts(req, res) {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_DATA_API_BASE_URL}/api/message-refresh`,
+      `${import.meta.env.VITE_DATA_API_BASE_URL}/message-refresh`,
       {
         method: 'POST',
       }
