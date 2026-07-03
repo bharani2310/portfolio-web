@@ -98,32 +98,6 @@ export default function AdminPassword() {
             </select>
           </div>
 
-          {token && (
-            <div>
-              <label className="block text-sm font-medium text-ink mb-2">
-                Generated Token
-              </label>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={token}
-                  className="flex-1 rounded-xl border border-line bg-panel px-3 py-2 text-sm text-ink"
-                />
-
-                <button
-                  type="button"
-                  onClick={copyToken}
-                  className="h-10 w-10 flex items-center justify-center rounded-xl border border-line hover:bg-panel transition"
-                  title="Copy Token"
-                >
-                  <FiCopy size={18} />
-                </button>
-              </div>
-            </div>
-          )}
-
           {tokenType === 'admin' && (
             <>
               <Field
@@ -152,6 +126,32 @@ export default function AdminPassword() {
                 required
               />
             </>
+          )}
+
+          {token && (
+            <div>
+              <label className="block text-sm font-medium text-ink mb-2">
+                Generated Token
+              </label>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={token}
+                  className="flex-1 rounded-xl border border-line bg-panel px-3 py-2 text-sm text-ink"
+                />
+
+                <button
+                  type="button"
+                  onClick={copyToken}
+                  className="h-10 w-10 flex items-center justify-center rounded-xl border border-line hover:bg-panel transition"
+                  title="Copy Token"
+                >
+                  <FiCopy size={18} />
+                </button>
+              </div>
+            </div>
           )}
 
           <Button
