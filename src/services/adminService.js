@@ -3,10 +3,29 @@ import api from '../api/axios';
 const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 export const authService = {
-  login: (email, password) => api.post('/auth/login', { email, password }).then((r) => r.data),
-  me: () => api.get('/auth/me').then((r) => r.data),
+  login: (email, password) =>
+    api.post('/auth/login', { email, password }).then((r) => r.data),
+
+  me: () =>
+    api.get('/auth/me').then((r) => r.data),
+
   changePassword: (currentPassword, newPassword) =>
-    api.put('/auth/change-password', { currentPassword, newPassword }).then((r) => r.data),
+    api.put('/auth/change-password', {
+      currentPassword,
+      newPassword,
+    }).then((r) => r.data),
+
+  generateUserToken: (email, password) =>
+    api.post('/auth/login', {
+      email,
+      password,
+    }).then((r) => r.data),
+
+  generateAdminToken: (email, password) =>
+    api.post('/auth/login', {
+      email,
+      password,
+    }).then((r) => r.data),
 };
 
 export const adminProfileService = {

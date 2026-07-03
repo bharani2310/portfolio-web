@@ -9,7 +9,7 @@ const NAV = [
   { to: '/admin/skills', label: 'Skills', icon: FiCode },
   { to: '/admin/projects', label: 'Projects', icon: FiFolder },
   { to: '/admin/messages', label: 'Messages', icon: FiMail },
-  { to: '/admin/password', label: 'Password', icon: FiLock },
+  { to: '/admin/password', label: 'Passkey', icon: FiLock },
 ];
 
 export default function AdminLayout() {
