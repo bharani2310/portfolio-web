@@ -19,10 +19,11 @@ export default function AdminLogin() {
     try {
       await login(form.email, form.password);
       toast.success('Logged in successfully.');
-      navigate('/admin', { replace: true });
+      setTimeout(() => {
+        navigate('/admin', { replace: true });
+      }, 600);
     } catch (err) {
       setError(err.message || 'Login failed.');
-    } finally {
       setSubmitting(false);
     }
   };
@@ -78,6 +79,8 @@ export default function AdminLogin() {
           {submitting ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
+
+      <ToastContainer toasts={toast.toasts} onDismiss={toast.dismiss} />
     </div>
   );
 }

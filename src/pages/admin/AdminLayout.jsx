@@ -34,11 +34,11 @@ export default function AdminLayout() {
 
   const handleLogout = () => {
     setOpen(false);
+    toast.success('Logged out successfully.');
     setLoggingOut(true);
     setTimeout(() => {
       logout();
       navigate('/admin/login', { replace: true });
-      toast.success('Logged out successfully.');
     }, 700);
   };
 
