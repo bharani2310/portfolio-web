@@ -5,7 +5,7 @@ import { adminProfileService } from '../../services/adminService';
 import { Field, TextAreaField, Button, Card } from './components/ui.jsx';
 import { useToasts, ToastContainer } from './components/Toast.jsx';
 
-const SOCIAL_KEYS = ['github', 'linkedin', 'twitter', 'email'];
+const SOCIAL_KEYS = ['github', 'linkedin', 'leetcode', 'email'];
 
 export default function AdminProfile() {
   const { data: profile, loading, refetch } = useCachedFetch('admin_profile', profileService.get, []);

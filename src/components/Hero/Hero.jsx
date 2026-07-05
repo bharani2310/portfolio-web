@@ -79,7 +79,7 @@ export default function Hero() {
               <div className="flex items-center gap-3">
                 {profile?.socialLinks &&
                   Object.entries(profile.socialLinks).map(([key, url]) => {
-                    const Icon = ICONS[key.toLowerCase()] || FiMail;
+                    const Icon = ICONS[key.trim().toLowerCase()] || FiMail;
                     return (
                       <a
                         key={key}
