@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { FiDownload, FiGithub, FiLinkedin, FiTwitter, FiMail } from 'react-icons/fi';
+import { SiLeetcode } from "react-icons/si";
 import { usePortfolio } from '../../hooks/usePortfolioContext.jsx';
 import Reveal from '../Reveal';
 
 const ICONS = {
   github: FiGithub,
   linkedin: FiLinkedin,
-  twitter: FiTwitter,
+  leetcode: SiLeetcode,
   email: FiMail,
 };
 
