@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../hooks/useAdminAuth.jsx';
+import { useToasts, ToastContainer } from './components/Toast.jsx';
+
 
 export default function AdminLogin() {
   const { login } = useAdminAuth();
@@ -8,6 +10,7 @@ export default function AdminLogin() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const toast = useToasts();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,6 +18,7 @@ export default function AdminLogin() {
     setSubmitting(true);
     try {
       await login(form.email, form.password);
+      toast.success('Logged in successfully.');
       navigate('/admin', { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed.');
