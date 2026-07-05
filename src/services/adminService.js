@@ -15,11 +15,6 @@ export const authService = {
       newPassword,
     }).then((r) => r.data),
 
-  generateUserToken: (email, password) =>
-    api.post('/auth/login', {
-      email,
-      password,
-    }).then((r) => r.data),
 
   generateAdminToken: (email, password) =>
     api.post('/auth/login', {

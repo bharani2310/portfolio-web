@@ -49,8 +49,15 @@ export default function AdminProfile() {
     try {
       const fd = new FormData();
       Object.entries(form).forEach(([key, value]) => {
-        if (key === 'socialLinks') fd.append('socialLinks', JSON.stringify(value));
-        else fd.append(key, value);
+        if (key === 'socialLinks') {
+          const cleaned = {};
+          SOCIAL_KEYS.forEach((k) => {
+            if (value[k]) cleaned[k] = value[k];
+          });
+          fd.append('socialLinks', JSON.stringify(cleaned));
+        } else {
+          fd.append(key, value);
+        }
       });
       if (imageFile) fd.append('image', imageFile);
 

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FiDownload, FiGithub, FiLinkedin, FiTwitter, FiMail } from 'react-icons/fi';
+import { FiDownload, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
 import { SiLeetcode } from "react-icons/si";
 import { usePortfolio } from '../../hooks/usePortfolioContext.jsx';
 import Reveal from '../Reveal';
@@ -78,9 +78,11 @@ export default function Hero() {
               )}
               <div className="flex items-center gap-3">
                 {profile?.socialLinks &&
-                  Object.entries(profile.socialLinks).map(([key, url]) => {
-                    const Icon = ICONS[key.trim().toLowerCase()] || FiMail;
-                    return (
+                  Object.entries(profile.socialLinks)
+                    .filter(([key]) => ICONS[key.trim().toLowerCase()])
+                    .map(([key, url]) => {
+                      const Icon = ICONS[key.trim().toLowerCase()];
+                      return (
                       <a
                         key={key}
                         href={url}
