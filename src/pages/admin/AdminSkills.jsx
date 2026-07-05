@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
-import useFetch from '../../hooks/useFetch';
+import useCachedFetch from '../../hooks/useCachedFetch';
 import { skillsService } from '../../services/portfolioService';
 import { adminSkillsService } from '../../services/adminService';
 import { Field, Button, Card } from './components/ui.jsx';
@@ -9,7 +9,7 @@ import { useToasts, ToastContainer } from './components/Toast.jsx';
 const EMPTY = { category: '', items: [{ name: '', level: 80 }] };
 
 export default function AdminSkills() {
-  const { data: categories, loading, refetch } = useFetch(skillsService.getAll, []);
+  const { data: categories, loading, refetch } = useCachedFetch('admin_skills', skillsService.getAll, []);
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);

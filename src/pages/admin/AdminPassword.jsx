@@ -1,37 +1,33 @@
 import { useState } from 'react';
 import { authService } from '../../services/adminService';
-import { Field, Button, Card, StatusBanner } from './components/ui.jsx';
+import { Field, SelectField, Button, Card } from './components/ui.jsx';
+import { useToasts, ToastContainer } from './components/Toast.jsx';
 import { FiCopy } from "react-icons/fi";
 
 export default function AdminPassword() {
+  const toast = useToasts();
   const [form, setForm] = useState({ currentPassword:'', newPassword:'', confirm:'' });
   const [tokenType, setTokenType] = useState('user');
   const [credentials, setCredentials] = useState({ email:'', password:'' });
   const [token, setToken] = useState('');
   const [loadingToken, setLoadingToken] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
-
-  const clearStatus = () => setTimeout(() => { setStatus(null); setMessage(''); }, 4000);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.newPassword !== form.confirm) {
-      setStatus('error'); setMessage('New password and confirmation do not match.'); return clearStatus();
+      toast.error('New password and confirmation do not match.');
+      return;
     }
     setSaving(true);
     try {
       await authService.changePassword(form.currentPassword, form.newPassword);
-      setStatus('success');
-      setMessage('Password updated successfully.');
+      toast.success('Password updated successfully.');
       setForm({ currentPassword:'', newPassword:'', confirm:'' });
     } catch (err) {
-      setStatus('error');
-      setMessage(err.response?.data?.message || err.message || 'Failed to update password.');
+      toast.error(err.response?.data?.message || err.message || 'Failed to update password.');
     } finally {
       setSaving(false);
-      clearStatus();
     }
   };
 
@@ -46,22 +42,17 @@ export default function AdminPassword() {
         generatedToken = data.token || data.accessToken || '';
       }
       setToken(generatedToken);
-      setStatus('success');
-      setMessage(`${tokenType === 'user' ? 'User' : 'Admin'} token generated successfully.`);
+      toast.success(`${tokenType === 'user' ? 'User' : 'Admin'} token generated successfully.`);
     } catch (err) {
-      setStatus('error');
-      setMessage(err.response?.data?.message || err.message || 'Failed to generate token.');
+      toast.error(err.response?.data?.message || err.message || 'Failed to generate token.');
     } finally {
       setLoadingToken(false);
-      clearStatus();
     }
   };
 
   const copyToken = async () => {
     await navigator.clipboard.writeText(token);
-    setStatus('success');
-    setMessage('Token copied successfully.');
-    clearStatus();
+    toast.success('Token copied successfully.');
   };
 
   return (
@@ -87,16 +78,14 @@ export default function AdminPassword() {
       <Card>
         <h3 className="font-display font-bold text-xl mb-4">Generate Token</h3>
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-ink mb-2">Token Type</label>
-            <select
-              value={tokenType}
-              onChange={(e)=>{setTokenType(e.target.value);setToken('');setCredentials({email:'',password:''});}}
-              className="w-full rounded-xl border border-line bg-panel px-4 py-3 text-sm outline-none transition focus:border-accent-mint focus:ring-2 focus:ring-accent-mint/20">
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+          <SelectField
+            label="Token Type"
+            value={tokenType}
+            onChange={(e) => { setTokenType(e.target.value); setToken(''); setCredentials({ email: '', password: '' }); }}
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </SelectField>
 
           {tokenType === 'admin' && (
             <>
@@ -130,7 +119,7 @@ export default function AdminPassword() {
 
           {token && (
             <div>
-              <label className="block text-sm font-medium text-ink mb-2">
+              <label className="block font-mono text-xs text-ink/50 mb-2">
                 Generated Token
               </label>
 
@@ -139,16 +128,16 @@ export default function AdminPassword() {
                   type="text"
                   readOnly
                   value={token}
-                  className="flex-1 rounded-xl border border-line bg-panel px-3 py-2 text-sm text-ink"
+                  className="flex-1 bg-transparent border border-line rounded-lg px-4 py-2.5 text-sm text-ink focus:outline-none focus:border-accent-mint"
                 />
 
                 <button
                   type="button"
                   onClick={copyToken}
-                  className="h-10 w-10 flex items-center justify-center rounded-xl border border-line hover:bg-panel transition"
+                  className="h-10 w-10 shrink-0 flex items-center justify-center rounded-lg border border-line text-ink/60 hover:text-accent-mint hover:border-accent-mint transition-colors"
                   title="Copy Token"
                 >
-                  <FiCopy size={18} />
+                  <FiCopy size={16} />
                 </button>
               </div>
             </div>
@@ -161,14 +150,10 @@ export default function AdminPassword() {
           >
             {loadingToken ? 'Generating...' : 'Generate Token'}
           </Button>
-
-          <StatusBanner
-            status={status}
-            success={message}
-            error={message}
-          />
         </div>
       </Card>
+
+      <ToastContainer toasts={toast.toasts} onDismiss={toast.dismiss} />
     </div>
   );
 }

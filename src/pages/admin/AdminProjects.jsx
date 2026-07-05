@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
-import useFetch from '../../hooks/useFetch';
+import useCachedFetch from '../../hooks/useCachedFetch';
 import { projectsService } from '../../services/portfolioService';
 import { adminProjectsService } from '../../services/adminService';
 import { Field, TextAreaField, Button, Card } from './components/ui.jsx';
@@ -9,7 +9,7 @@ import { useToasts, ToastContainer } from './components/Toast.jsx';
 const EMPTY = { title: '', description: '', details: '', technologies: '', githubLink: '', liveLink: '' };
 
 export default function AdminProjects() {
-  const { data: projects, loading, refetch } = useFetch(projectsService.getAll, []);
+  const { data: projects, loading, refetch } = useCachedFetch('admin_projects', projectsService.getAll, []);
   const [editing, setEditing] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);

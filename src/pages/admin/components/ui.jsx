@@ -24,6 +24,36 @@ export function TextAreaField({ label, ...props }) {
   );
 }
 
+export function SelectField({ label, children, className = '', ...props }) {
+  return (
+    <label className="block">
+      {label && <span className="block font-mono text-xs text-ink/50 mb-2">{label}</span>}
+      <div className="relative">
+        <select
+          {...props}
+          className={`w-full appearance-none bg-bg-surface border border-line rounded-lg pl-4 pr-10 py-2.5 text-sm text-ink focus:outline-none focus:border-accent-mint ${className}`}
+        >
+          {children}
+        </select>
+        {/* Custom chevron — native arrows render inconsistently and don't follow the theme */}
+        <svg
+          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink/40"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </div>
+    </label>
+  );
+}
+
 export function Button({ variant = 'primary', className = '', ...props }) {
   const base = 'px-5 py-2.5 rounded-full font-mono text-sm transition-colors disabled:opacity-50';
   const variants = {

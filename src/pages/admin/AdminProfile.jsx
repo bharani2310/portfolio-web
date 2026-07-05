@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useFetch from '../../hooks/useFetch';
+import useCachedFetch from '../../hooks/useCachedFetch';
 import { profileService } from '../../services/portfolioService';
 import { adminProfileService } from '../../services/adminService';
 import { Field, TextAreaField, Button, Card } from './components/ui.jsx';
@@ -8,7 +8,7 @@ import { useToasts, ToastContainer } from './components/Toast.jsx';
 const SOCIAL_KEYS = ['github', 'linkedin', 'twitter', 'email'];
 
 export default function AdminProfile() {
-  const { data: profile, loading, refetch } = useFetch(profileService.get, []);
+  const { data: profile, loading, refetch } = useCachedFetch('admin_profile', profileService.get, []);
   const [form, setForm] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);

@@ -1,40 +1,16 @@
 import { useEffect, useState } from 'react';
 import dataApi from '../api/dataApi';
+import { getCache, setCache, clearCache } from '../utils/localCache';
 
 const CACHE_KEY = 'portfolio_all_data';
-const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
-
-function readCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { data, cachedAt } = JSON.parse(raw);
-    if (Date.now() - cachedAt > CACHE_TTL_MS) {
-      localStorage.removeItem(CACHE_KEY);
-      return null;
-    }
-    return data;
-  } catch {
-    return null;
-  }
-}
-
-function writeCache(data) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, cachedAt: Date.now() }));
-  } catch (e) {
-    // localStorage quota exceeded — images may be too large; skip silently
-    console.warn('Portfolio cache write failed (quota?):', e.message);
-  }
-}
 
 export function usePortfolioData() {
-  const [data, setData] = useState(() => readCache());
-  const [loading, setLoading] = useState(!readCache());
+  const [data, setData] = useState(() => getCache(CACHE_KEY));
+  const [loading, setLoading] = useState(() => !getCache(CACHE_KEY));
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const cached = readCache();
+    const cached = getCache(CACHE_KEY);
     if (cached) {
       setData(cached);
       setLoading(false);
@@ -47,7 +23,7 @@ export function usePortfolioData() {
       .get('/all')
       .then((res) => {
         if (cancelled) return;
-        writeCache(res.data);
+        setCache(CACHE_KEY, res.data);
         setData(res.data);
       })
       .catch((err) => {
@@ -63,9 +39,7 @@ export function usePortfolioData() {
   }, []);
 
   /** Call this after admin saves to bust the cache so visitors get fresh data. */
-  const invalidateCache = () => {
-    localStorage.removeItem(CACHE_KEY);
-  };
+  const invalidateCache = () => clearCache(CACHE_KEY);
 
   return { data, loading, error, invalidateCache };
 }

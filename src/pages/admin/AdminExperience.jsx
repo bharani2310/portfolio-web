@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
-import useFetch from '../../hooks/useFetch';
+import useCachedFetch from '../../hooks/useCachedFetch';
 import { experienceService } from '../../services/portfolioService';
 import { adminExperienceService } from '../../services/adminService';
 import { Field, TextAreaField, Button, Card } from './components/ui.jsx';
@@ -11,7 +11,7 @@ const EMPTY_ROLE = { role: '', startDate: '', endDate: '', description: '' };
 const EMPTY = { companyName: '', roles: [{ ...EMPTY_ROLE }], technologies: '' };
 
 export default function AdminExperience() {
-  const { data: items, loading, refetch } = useFetch(experienceService.getAll, []);
+  const { data: items, loading, refetch } = useCachedFetch('admin_experience', experienceService.getAll, []);
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
