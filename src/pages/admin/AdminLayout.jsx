@@ -164,7 +164,7 @@ export default function AdminLayout() {
             <FiExternalLink size={16} /> View API Docs
           </a>
           <a
-            href="/"
+            href="/portfolio-web/"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-3 px-4 py-2.5 rounded-lg font-mono text-sm text-ink/60 hover:text-ink hover:bg-line/30"
