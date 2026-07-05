@@ -14,6 +14,7 @@ import {
   FiX,
 } from 'react-icons/fi';
 import { useAdminAuth } from '../../hooks/useAdminAuth.jsx';
+import { useToasts, ToastContainer } from './components/Toast.jsx';
 
 const NAV = [
   { to: '/admin', label: 'Profile', icon: FiUser, end: true },
@@ -29,9 +30,11 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
   const [open, setOpen] = useState(false);
+  const toast = useToasts();
 
   const handleLogout = () => {
     setOpen(false);
+    toast.success('Logged out successfully.');
     setLoggingOut(true);
     setTimeout(() => {
       logout();
@@ -164,7 +167,7 @@ export default function AdminLayout() {
             <FiExternalLink size={16} /> View API Docs
           </a>
           <a
-            href="/portfolio-web/"
+            href={import.meta.env.VITE_FRONTEND_URL}
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-3 px-4 py-2.5 rounded-lg font-mono text-sm text-ink/60 hover:text-ink hover:bg-line/30"
@@ -193,6 +196,8 @@ export default function AdminLayout() {
       <main className="flex-1 p-6 md:p-10 max-w-4xl">
         <Outlet />
       </main>
+
+      <ToastContainer toasts={toast.toasts} onDismiss={toast.dismiss} />
     </div>
   );
 }

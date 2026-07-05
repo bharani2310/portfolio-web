@@ -36,14 +36,14 @@ export function useToasts() {
 
 export function ToastContainer({ toasts, onDismiss }) {
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 w-[calc(100%-3rem)] max-w-sm pointer-events-none">
+    <div className="fixed top-6 right-6 z-[100] flex flex-col gap-3 w-[calc(100%-3rem)] max-w-sm pointer-events-none">
       <AnimatePresence>
         {toasts.map((t) => (
           <motion.div
             key={t.id}
-            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className={`glass rounded-xl px-4 py-3 flex items-start gap-3 shadow-lg pointer-events-auto ${
               t.type === 'success' ? 'border border-accent-mint/40' : 'border border-red-400/40'

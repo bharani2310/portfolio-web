@@ -8,7 +8,7 @@
  */
 
 const PREFIX = 'pf_cache:';
-export const CACHE_TTL_MS = 3 * 60 * 1000; // 1 hour
+export const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 function fullKey(key) {
   return `${PREFIX}${key}`;
