@@ -42,7 +42,8 @@ export default function ProjectCard({ project, index, onDetails }) {
             onClick={() => onDetails(project)}
             className="flex-1 px-4 py-2 rounded-full border border-line text-sm font-mono hover:border-accent-mint hover:text-accent-mint transition-colors"
           >
-            More Details
+            <span className="hidden sm:inline">More Details</span>
+            <span className="sm:hidden">More</span>
           </button>
           {project.liveLink && (
             <a

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
 import { useAdminAuth } from '../../hooks/useAdminAuth.jsx';
 import { useToasts, ToastContainer } from './components/Toast.jsx';
 
@@ -30,55 +31,68 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg px-6">
-      <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 w-full max-w-sm space-y-5">
-        <div>
-          <h1 className="font-display font-bold text-2xl">
-            <span className="text-ink">&lt;</span>
-            <span className="gradient-text">Admin</span>
-            <span className="text-ink">/&gt;</span>
-          </h1>
-          <p className="text-ink/50 text-sm mt-1">Sign in to manage your portfolio</p>
-        </div>
-
-        <div>
-          <label className="block font-mono text-xs text-ink/50 mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            className="w-full bg-transparent border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent-mint"
-            placeholder="admin@example.com"
-          />
-        </div>
-        <div>
-          <label className="block font-mono text-xs text-ink/50 mb-2" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={form.password}
-            onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            className="w-full bg-transparent border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent-mint"
-            placeholder="••••••••"
-          />
-        </div>
-
-        {error && <p className="text-red-400 text-sm font-mono">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full px-6 py-3 rounded-full bg-accent-violet text-white font-mono text-sm font-medium hover:bg-accent-violet/90 transition-colors disabled:opacity-50"
+      <div className="w-full max-w-sm">
+        <a
+          href={import.meta.env.VITE_FRONTEND_URL}
+          className="group inline-flex items-center gap-2 mb-6 font-mono text-sm text-ink/50 hover:text-accent-mint transition-colors"
         >
-          {submitting ? 'Signing in...' : 'Sign In'}
-        </button>
-      </form>
+          <FiArrowLeft
+            size={15}
+            className="transition-transform group-hover:-translate-x-0.5"
+          />
+          Back to portfolio
+        </a>
+
+        <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 w-full space-y-5">
+          <div>
+            <h1 className="font-display font-bold text-2xl">
+              <span className="text-ink">&lt;</span>
+              <span className="gradient-text">Admin</span>
+              <span className="text-ink">/&gt;</span>
+            </h1>
+            <p className="text-ink/50 text-sm mt-1">Sign in to manage your portfolio</p>
+          </div>
+
+          <div>
+            <label className="block font-mono text-xs text-ink/50 mb-2" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className="w-full bg-transparent border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent-mint"
+              placeholder="admin@example.com"
+            />
+          </div>
+          <div>
+            <label className="block font-mono text-xs text-ink/50 mb-2" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={form.password}
+              onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+              className="w-full bg-transparent border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent-mint"
+              placeholder="••••••••"
+            />
+          </div>
+
+          {error && <p className="text-red-400 text-sm font-mono">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full px-6 py-3 rounded-full bg-accent-violet text-white font-mono text-sm font-medium hover:bg-accent-violet/90 transition-colors disabled:opacity-50"
+          >
+            {submitting ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+      </div>
 
       <ToastContainer toasts={toast.toasts} onDismiss={toast.dismiss} />
     </div>

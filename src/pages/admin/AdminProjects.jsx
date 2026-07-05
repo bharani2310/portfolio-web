@@ -90,7 +90,11 @@ export default function AdminProjects() {
           <h2 className="font-display font-bold text-2xl mb-1">Projects</h2>
           <p className="text-ink/50 text-sm">Cards shown in the Projects section.</p>
         </div>
-        <Button onClick={openNew} className="flex items-center gap-2"><FiPlus /> Add Project</Button>
+        <Button onClick={openNew} className="flex items-center gap-2">
+          <FiPlus />
+          <span className="hidden sm:inline">Add Project</span>
+          <span className="sm:hidden">Add</span>
+        </Button>
       </div>
 
       {loading && <p className="text-ink/50 font-mono text-sm">Loading...</p>}

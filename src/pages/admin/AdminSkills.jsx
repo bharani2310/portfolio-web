@@ -76,7 +76,11 @@ export default function AdminSkills() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div><h2 className="font-display font-bold text-2xl mb-1">Skills</h2><p className="text-ink/50 text-sm">Skill categories and progress levels.</p></div>
-        <Button onClick={openNew} className="flex items-center gap-2"><FiPlus /> Add Category</Button>
+        <Button onClick={openNew} className="flex items-center gap-2">
+          <FiPlus />
+          <span className="hidden sm:inline">Add Category</span>
+          <span className="sm:hidden">Add</span>
+        </Button>
       </div>
 
       {loading && <p className="text-ink/50 font-mono text-sm">Loading...</p>}
