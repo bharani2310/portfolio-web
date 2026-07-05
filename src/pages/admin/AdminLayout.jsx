@@ -99,7 +99,7 @@ export default function AdminLayout() {
                     <FiExternalLink size={16} /> View API Docs
                   </a>
                   <a
-                    href="/"
+                    href={import.meta.env.VITE_FRONTEND_URL}
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => setOpen(false)}
