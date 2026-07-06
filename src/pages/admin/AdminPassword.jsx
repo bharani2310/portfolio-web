@@ -32,23 +32,45 @@ export default function AdminPassword() {
   };
 
   const generateToken = async () => {
-    try {
-      setLoadingToken(true);
-      let generatedToken = '';
-      if (tokenType === 'user') {
-        generatedToken = import.meta.env.VITE_MIDDLEWARE_API_TOKEN || '';
-      } else {
-        const data = await authService.generateAdminToken(credentials.email, credentials.password);
-        generatedToken = data.token || data.accessToken || '';
-      }
-      setToken(generatedToken);
-      toast.success(`${tokenType === 'user' ? 'User' : 'Admin'} token generated successfully.`);
-    } catch (err) {
-      toast.error(err.response?.data?.message || err.message || 'Failed to generate token.');
-    } finally {
-      setLoadingToken(false);
+  try {
+    setLoadingToken(true);
+
+    let generatedToken = '';
+
+    if (tokenType === 'user') {
+      generatedToken = import.meta.env.VITE_MIDDLEWARE_API_TOKEN || '';
+    } else if (tokenType === 'refresh') {
+      generatedToken = import.meta.env.VITE_REFRESH_TOKEN || '';
+    } else {
+      const data = await authService.generateAdminToken(
+        credentials.email,
+        credentials.password
+      );
+
+      generatedToken = data.token || data.accessToken || '';
     }
-  };
+
+    setToken(generatedToken);
+
+    toast.success(
+      `${
+        tokenType === 'user'
+          ? 'User'
+          : tokenType === 'admin'
+          ? 'Admin'
+          : 'Refresh'
+      } token generated successfully.`
+    );
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message ||
+        err.message ||
+        'Failed to generate token.'
+    );
+  } finally {
+    setLoadingToken(false);
+  }
+};
 
   const copyToken = async () => {
     await navigator.clipboard.writeText(token);
@@ -83,8 +105,9 @@ export default function AdminPassword() {
             value={tokenType}
             onChange={(e) => { setTokenType(e.target.value); setToken(''); setCredentials({ email: '', password: '' }); }}
           >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
+            <option value="user">User Token</option>
+            <option value="refresh">Refresh Token</option>
+            <option value="admin">Admin Token</option>
           </SelectField>
 
           {tokenType === 'admin' && (
