@@ -12,6 +12,7 @@ export default function AdminProfile() {
   const [form, setForm] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
   const [saving, setSaving] = useState(false);
   const toast = useToasts();
 
@@ -24,7 +25,6 @@ export default function AdminProfile() {
         professionalSummary: profile.professionalSummary || '',
         currentCompany: profile.currentCompany || '',
         location: profile.location || '',
-        resumeLink: profile.resumeLink || '',
         socialLinks: { ...profile.socialLinks },
       });
     }
@@ -41,6 +41,16 @@ export default function AdminProfile() {
     if (!file) return;
     setImageFile(file);
     setPreview(URL.createObjectURL(file));
+  };
+
+  const handleResumeChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      toast.error('Resume must be a PDF file.');
+      return;
+    }
+    setResumeFile(file);
   };
 
   const handleSubmit = async (e) => {
@@ -60,10 +70,12 @@ export default function AdminProfile() {
         }
       });
       if (imageFile) fd.append('image', imageFile);
+      if (resumeFile) fd.append('resume', resumeFile);
 
       await adminProfileService.update(fd);
       toast.success('Profile updated successfully.');
       setImageFile(null);
+      setResumeFile(null);
       refetch();
     } catch (err) {
       toast.error(err.message || 'Failed to save profile.');
@@ -122,12 +134,33 @@ export default function AdminProfile() {
           />
           <Field label="Location" value={form.location} onChange={(e) => handleChange('location', e.target.value)} />
         </div>
-        <Field
-          label="Resume Link"
-          value={form.resumeLink}
-          onChange={(e) => handleChange('resumeLink', e.target.value)}
-          placeholder="https://..."
-        />
+      </Card>
+
+      <Card className="space-y-2">
+        <h3 className="font-mono text-sm text-ink/60 uppercase tracking-wider mb-2">Resume</h3>
+        <label className="inline-block">
+          <span className="px-4 py-2 rounded-full border border-line text-sm font-mono cursor-pointer hover:border-accent-mint hover:text-accent-mint">
+            {resumeFile ? 'Change selected PDF' : profile?.resumeFile ? 'Replace Resume PDF' : 'Upload Resume PDF'}
+          </span>
+          <input type="file" accept="application/pdf" onChange={handleResumeChange} className="hidden" />
+        </label>
+        <p className="text-ink/40 text-xs mt-2 font-mono">
+          {resumeFile
+            ? `Selected: ${resumeFile.name} (will upload on Save)`
+            : profile?.resumeFile
+            ? 'A resume PDF is already uploaded — visitors see it via a popup viewer on the site.'
+            : 'PDF only, up to 10MB. Visitors will see it via a popup viewer on the site.'}
+        </p>
+        {profile?.resumeFile && !resumeFile && (
+          <a
+            href={profile.resumeFile}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-block mt-1 text-xs font-mono text-accent-mint hover:underline"
+          >
+            View current resume →
+          </a>
+        )}
       </Card>
 
       <Card className="space-y-4">

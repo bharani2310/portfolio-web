@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiDownload, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
-import { SiLeetcode } from "react-icons/si";
+import { FiFileText, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
+import { SiLeetcode } from 'react-icons/si';
 import { usePortfolio } from '../../hooks/usePortfolioContext.jsx';
+import dataApi from '../../api/dataApi';
 import Reveal from '../Reveal';
+import ResumeModal from './ResumeModal';
 
 const ICONS = {
   github: FiGithub,
@@ -14,6 +17,33 @@ const ICONS = {
 export default function Hero() {
   const { data, loading } = usePortfolio();
   const profile = data?.profile;
+
+  const [resumeUrl, setResumeUrl] = useState(null);
+  const [resumeLoading, setResumeLoading] = useState(false);
+  const [resumeError, setResumeError] = useState(null);
+
+  // The middleware's GET /api/resume requires a bearer token, which a
+  // plain <a href>/<iframe src> can never send — so it's fetched here as
+  // a blob through the same authenticated axios client used for /all and
+  // /contact, then handed to the modal as an object URL.
+  const openResume = async () => {
+    if (resumeLoading) return;
+    setResumeLoading(true);
+    setResumeError(null);
+    try {
+      const res = await dataApi.get('/resume', { responseType: 'blob' });
+      setResumeUrl(URL.createObjectURL(res.data));
+    } catch (err) {
+      setResumeError(err.message || 'Failed to load resume.');
+    } finally {
+      setResumeLoading(false);
+    }
+  };
+
+  const closeResume = () => {
+    if (resumeUrl) URL.revokeObjectURL(resumeUrl);
+    setResumeUrl(null);
+  };
 
   return (
     <section
@@ -66,15 +96,15 @@ export default function Hero() {
           </Reveal>
           <Reveal delay={0.26}>
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-              {profile?.resumeLink && (
-                <a
-                  href={profile.resumeLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-violet text-white font-mono text-sm font-medium hover:bg-accent-violet/90 transition-colors"
+              {profile?.resumeFile && (
+                <button
+                  type="button"
+                  onClick={openResume}
+                  disabled={resumeLoading}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-violet text-white font-mono text-sm font-medium hover:bg-accent-violet/90 transition-colors disabled:opacity-60"
                 >
-                  <FiDownload /> Resume
-                </a>
+                  <FiFileText /> {resumeLoading ? 'Loading…' : 'Resume'}
+                </button>
               )}
               <div className="flex items-center gap-3">
                 {profile?.socialLinks &&
@@ -83,23 +113,28 @@ export default function Hero() {
                     .map(([key, url]) => {
                       const Icon = ICONS[key.trim().toLowerCase()];
                       return (
-                      <a
-                        key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-10 h-10 flex items-center justify-center rounded-full border border-line text-ink/70 hover:text-accent-mint hover:border-accent-mint transition-colors"
-                        aria-label={key}
-                      >
-                        <Icon size={16} />
-                      </a>
-                    );
-                  })}
+                        <a
+                          key={key}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="w-10 h-10 flex items-center justify-center rounded-full border border-line text-ink/70 hover:text-accent-mint hover:border-accent-mint transition-colors"
+                          aria-label={key}
+                        >
+                          <Icon size={16} />
+                        </a>
+                      );
+                    })}
               </div>
             </div>
+            {resumeError && (
+              <p className="text-red-400 text-xs font-mono mt-3">{resumeError}</p>
+            )}
           </Reveal>
         </div>
       </div>
+
+      <ResumeModal url={resumeUrl} onClose={closeResume} />
     </section>
   );
 }
