@@ -10,6 +10,26 @@ import { useToasts, ToastContainer } from './components/Toast.jsx';
 const EMPTY_ROLE = { role: '', startDate: '', endDate: '', description: '' };
 const EMPTY = { companyName: '', roles: [{ ...EMPTY_ROLE }], technologies: '' };
 
+// Same "total time at this company" calculation used on the public
+// Experience section — spans earliest role start to latest role end (or
+// now, if still ongoing) — shown next to the company name in the list.
+function calcTotalDuration(roles = []) {
+  if (!roles.length) return null;
+  const starts = roles.map((r) => new Date(r.startDate).getTime());
+  const ends = roles.map((r) => (r.endDate ? new Date(r.endDate).getTime() : Date.now()));
+  const earliestStart = Math.min(...starts);
+  const latestEnd = Math.max(...ends);
+  let months =
+    new Date(latestEnd).getFullYear() * 12 + new Date(latestEnd).getMonth() -
+    (new Date(earliestStart).getFullYear() * 12 + new Date(earliestStart).getMonth());
+  if (months < 1) months = 1;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (years === 0) return `${rem} mo`;
+  if (rem === 0) return `${years} yr`;
+  return `${years} yr ${rem} mo`;
+}
+
 export default function AdminExperience() {
   const { data: items, loading, refetch } = useCachedFetch('admin_experience', experienceService.getAll, []);
   const [editing, setEditing] = useState(null);
@@ -156,7 +176,14 @@ export default function AdminExperience() {
                   </div>
                 )}
                 <div className="min-w-0">
-                  <h3 className="font-display font-semibold mb-1 truncate">{item.companyName}</h3>
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <h3 className="font-display font-semibold truncate">{item.companyName}</h3>
+                    {calcTotalDuration(item.roles) && (
+                      <span className="shrink-0 font-mono text-xs text-accent-mint whitespace-nowrap">
+                        {calcTotalDuration(item.roles)}
+                      </span>
+                    )}
+                  </div>
                   {(item.roles || []).map((r, i) => (
                     <p key={i} className="font-mono text-xs text-ink/50">{r.role}</p>
                   ))}

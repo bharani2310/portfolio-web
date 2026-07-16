@@ -21,6 +21,18 @@ function calcDuration(startStr, endStr) {
   return `${years} yr ${rem} mo`;
 }
 
+// Total time at the company overall — spans from the earliest role's
+// start date to the latest role's end date (or "now" if any role there
+// is still ongoing) — not just a single role's individual duration.
+function calcTotalDuration(roles = []) {
+  if (!roles.length) return null;
+  const starts = roles.map((r) => new Date(r.startDate).getTime());
+  const ends = roles.map((r) => (r.endDate ? new Date(r.endDate).getTime() : Date.now()));
+  const earliestStart = Math.min(...starts);
+  const latestEnd = Math.max(...ends);
+  return calcDuration(earliestStart, latestEnd);
+}
+
 export default function Experience() {
   const { data, loading } = usePortfolio();
   const items = sortExperienceLatestFirst(data?.experience || []);
@@ -57,7 +69,14 @@ export default function Experience() {
                       <FiBriefcase className="text-ink/30" size={18} />
                     </div>
                   )}
-                  <h3 className="font-display font-bold text-xl min-w-0 break-words">{item.companyName}</h3>
+                  <div className="flex-1 min-w-0 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                    <h3 className="font-display font-bold text-xl min-w-0 break-words">{item.companyName}</h3>
+                    {calcTotalDuration(item.roles) && (
+                      <span className="shrink-0 font-mono text-xs text-accent-mint whitespace-nowrap">
+                        {calcTotalDuration(item.roles)}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {item.technologies?.length > 0 && (
