@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiBriefcase } from 'react-icons/fi';
 import useCachedFetch from '../../hooks/useCachedFetch';
 import { experienceService } from '../../services/portfolioService';
 import { adminExperienceService } from '../../services/adminService';
@@ -13,6 +13,8 @@ const EMPTY = { companyName: '', roles: [{ ...EMPTY_ROLE }], technologies: '' };
 export default function AdminExperience() {
   const { data: items, loading, refetch } = useCachedFetch('admin_experience', experienceService.getAll, []);
   const [editing, setEditing] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const formRef = useRef(null);
@@ -48,16 +50,24 @@ export default function AdminExperience() {
     roleCountRef.current = count;
   }, [editing?.roles?.length]);
 
-  const openNew = () => setEditing({ ...EMPTY, roles: [{ ...EMPTY_ROLE }] });
-  const openEdit = (item) => setEditing({
-    ...item,
-    technologies: (item.technologies || []).join(', '),
-    roles: sortRolesLatestFirst(item.roles || []).map(r => ({
-      ...r,
-      startDate: r.startDate ? r.startDate.slice(0, 10) : '',
-      endDate: r.endDate ? r.endDate.slice(0, 10) : '',
-    })),
-  });
+  const openNew = () => {
+    setEditing({ ...EMPTY, roles: [{ ...EMPTY_ROLE }] });
+    setImageFile(null);
+    setPreview(null);
+  };
+  const openEdit = (item) => {
+    setEditing({
+      ...item,
+      technologies: (item.technologies || []).join(', '),
+      roles: sortRolesLatestFirst(item.roles || []).map(r => ({
+        ...r,
+        startDate: r.startDate ? r.startDate.slice(0, 10) : '',
+        endDate: r.endDate ? r.endDate.slice(0, 10) : '',
+      })),
+    });
+    setImageFile(null);
+    setPreview(null);
+  };
   const close = () => setEditing(null);
 
   const updateRole = (idx, key, value) =>
@@ -70,20 +80,28 @@ export default function AdminExperience() {
   const addRole = () => setEditing(f => ({ ...f, roles: [...f.roles, { ...EMPTY_ROLE }] }));
   const removeRole = (idx) => setEditing(f => ({ ...f, roles: f.roles.filter((_, i) => i !== idx) }));
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     const isNew = !editing._id;
     try {
-      const payload = {
-        companyName: editing.companyName,
-        technologies: editing.technologies,
-        roles: JSON.stringify(editing.roles),
-      };
+      const fd = new FormData();
+      fd.append('companyName', editing.companyName);
+      fd.append('technologies', editing.technologies);
+      fd.append('roles', JSON.stringify(editing.roles));
+      if (imageFile) fd.append('image', imageFile);
+
       if (editing._id) {
-        await adminExperienceService.update(editing._id, payload);
+        await adminExperienceService.update(editing._id, fd);
       } else {
-        await adminExperienceService.create(payload);
+        await adminExperienceService.create(fd);
       }
       close();
       refetch();
@@ -125,11 +143,24 @@ export default function AdminExperience() {
         {sortExperienceLatestFirst(items || []).map(item => (
           <Card key={item._id}>
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <h3 className="font-display font-semibold mb-1">{item.companyName}</h3>
-                {(item.roles || []).map((r, i) => (
-                  <p key={i} className="font-mono text-xs text-ink/50">{r.role}</p>
-                ))}
+              <div className="flex items-center gap-3 min-w-0">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.companyName}
+                    className="w-11 h-11 rounded-lg object-cover border border-line shrink-0 bg-bg"
+                  />
+                ) : (
+                  <div className="w-11 h-11 rounded-lg border border-line bg-bg-surface flex items-center justify-center shrink-0">
+                    <FiBriefcase className="text-ink/30" size={18} />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <h3 className="font-display font-semibold mb-1 truncate">{item.companyName}</h3>
+                  {(item.roles || []).map((r, i) => (
+                    <p key={i} className="font-mono text-xs text-ink/50">{r.role}</p>
+                  ))}
+                </div>
               </div>
               <div className="flex gap-2 shrink-0">
                 <button onClick={() => openEdit(item)} className="p-2 text-ink/60 hover:text-accent-mint" title="Edit"><FiEdit2 size={16} /></button>
@@ -162,6 +193,26 @@ export default function AdminExperience() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="flex items-center gap-4">
+              {(preview || editing.image) ? (
+                <img
+                  src={preview || editing.image}
+                  alt="Company logo preview"
+                  className="w-16 h-16 rounded-xl object-cover border border-line bg-bg"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-xl border border-line bg-bg-surface flex items-center justify-center shrink-0">
+                  <FiBriefcase className="text-ink/30" size={22} />
+                </div>
+              )}
+              <label className="inline-block">
+                <span className="px-4 py-2 rounded-full border border-line text-sm font-mono cursor-pointer hover:border-accent-mint hover:text-accent-mint">
+                  {editing.image ? 'Change Logo' : 'Upload Logo'}
+                </span>
+                <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+              </label>
+            </div>
+
             <Field label="Company Name" value={editing.companyName}
               onChange={e => setEditing(f => ({ ...f, companyName: e.target.value }))} required />
 

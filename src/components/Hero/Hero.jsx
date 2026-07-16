@@ -78,7 +78,7 @@ export default function Hero() {
             <p className="eyebrow mb-4">Hello, I&apos;m</p>
           </Reveal>
           <Reveal delay={0.08}>
-            <h1 className="font-display font-extrabold text-4xl md:text-6xl leading-tight mb-3">
+            <h1 className="font-display font-extrabold leading-tight mb-3 break-words [text-wrap:balance] text-[clamp(1.75rem,6vw,3.75rem)]">
               {loading
                 ? <span className="inline-block w-48 h-10 glass rounded animate-pulse" />
                 : profile?.name || 'Your Name'}

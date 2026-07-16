@@ -1,3 +1,4 @@
+import { FiBriefcase } from 'react-icons/fi';
 import { usePortfolio } from '../../hooks/usePortfolioContext.jsx';
 import Reveal from '../Reveal';
 import { sortExperienceLatestFirst } from '../../utils/experienceSort';
@@ -39,11 +40,28 @@ export default function Experience() {
         {items.map((item, idx) => (
           <Reveal key={item._id || idx} delay={idx * 0.1}>
             <div className="glass rounded-2xl p-6">
-              {/* Company header */}
-              <div className="flex items-center justify-between gap-3 mb-4 pb-4 border-b border-line">
-                <h3 className="font-display font-bold text-xl">{item.companyName}</h3>
+              {/* Company header: logo + name on top, technologies below a
+                  divider line so a long/growing tech list can never
+                  squeeze the company name — it just wraps onto more
+                  lines of its own, right-aligned. */}
+              <div className="mb-4 pb-4 border-b border-line">
+                <div className="flex items-center gap-3">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.companyName}
+                      className="w-11 h-11 rounded-lg object-cover border border-line shrink-0 bg-bg"
+                    />
+                  ) : (
+                    <div className="w-11 h-11 rounded-lg border border-line bg-bg-surface flex items-center justify-center shrink-0">
+                      <FiBriefcase className="text-ink/30" size={18} />
+                    </div>
+                  )}
+                  <h3 className="font-display font-bold text-xl min-w-0 break-words">{item.companyName}</h3>
+                </div>
+
                 {item.technologies?.length > 0 && (
-                  <div className="hidden sm:flex flex-wrap gap-1 justify-end">
+                  <div className="flex flex-wrap gap-1 justify-end mt-3 pt-3 border-t border-line/60">
                     {item.technologies.map(t => (
                       <span key={t} className="text-xs font-mono px-2 py-0.5 rounded-full border border-line text-ink/50">
                         {t}
@@ -83,17 +101,6 @@ export default function Experience() {
                   </div>
                 ))}
               </div>
-
-              {/* Mobile tech tags */}
-              {item.technologies?.length > 0 && (
-                <div className="sm:hidden flex flex-wrap gap-1 mt-4 pt-4 border-t border-line">
-                  {item.technologies.map(t => (
-                    <span key={t} className="text-xs font-mono px-2 py-0.5 rounded-full border border-line text-ink/50">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
           </Reveal>
         ))}

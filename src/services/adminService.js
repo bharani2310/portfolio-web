@@ -28,8 +28,8 @@ export const adminProfileService = {
 };
 
 export const adminExperienceService = {
-  create: (payload) => api.post('/experience', payload).then((r) => r.data),
-  update: (id, payload) => api.put(`/experience/${id}`, payload).then((r) => r.data),
+  create: (formData) => api.post('/experience', formData, multipart).then((r) => r.data),
+  update: (id, formData) => api.put(`/experience/${id}`, formData, multipart).then((r) => r.data),
   remove: (id) => api.delete(`/experience/${id}`).then((r) => r.data),
 };
 
