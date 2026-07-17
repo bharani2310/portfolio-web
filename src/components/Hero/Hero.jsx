@@ -14,6 +14,16 @@ const ICONS = {
   email: FiMail,
 };
 
+// A real, directly-navigable URL for downloading the resume (token as a
+// query param, since a plain <a href> can't send an Authorization
+// header) — see lib/auth.js on the middleware side for the matching
+// ?token= fallback. Used instead of a blob: URL + download attribute,
+// which iOS Safari does not support (tapping such a link just navigates
+// to/displays the blob instead of downloading it).
+const RESUME_DOWNLOAD_URL = `${
+  import.meta.env.VITE_DATA_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || '/api'
+}/resume?download=1&token=${encodeURIComponent(import.meta.env.VITE_MIDDLEWARE_API_TOKEN || '')}`;
+
 export default function Hero() {
   const { data, loading } = usePortfolio();
   const profile = data?.profile;
@@ -134,7 +144,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <ResumeModal url={resumeUrl} onClose={closeResume} />
+      <ResumeModal url={resumeUrl} downloadUrl={RESUME_DOWNLOAD_URL} onClose={closeResume} />
     </section>
   );
 }
