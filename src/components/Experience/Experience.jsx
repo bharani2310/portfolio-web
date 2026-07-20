@@ -69,12 +69,21 @@ export default function Experience() {
                       <FiBriefcase className="text-ink/30" size={18} />
                     </div>
                   )}
-                  <div className="flex-1 min-w-0 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                    <h3 className="font-display font-bold text-xl min-w-0 break-words">{item.companyName}</h3>
-                    {calcTotalDuration(item.roles) && (
-                      <span className="shrink-0 font-mono text-xs text-accent-mint whitespace-nowrap">
-                        {calcTotalDuration(item.roles)}
-                      </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                      <h3 className="font-display font-bold text-xl min-w-0 break-words">{item.companyName}</h3>
+                      {calcTotalDuration(item.roles) && (
+                        <span className="shrink-0 font-mono text-xs text-accent-mint whitespace-nowrap">
+                          {calcTotalDuration(item.roles)}
+                        </span>
+                      )}
+                    </div>
+                    {(item.workplaceType || item.location) && (
+                      <p className="text-xs text-ink/50 mt-0.5">
+                        {item.workplaceType}
+                        {item.workplaceType && item.location && ' · '}
+                        {item.location}
+                      </p>
                     )}
                   </div>
                 </div>

@@ -3,12 +3,12 @@ import { FiPlus, FiEdit2, FiTrash2, FiX, FiBriefcase } from 'react-icons/fi';
 import useCachedFetch from '../../hooks/useCachedFetch';
 import { experienceService } from '../../services/portfolioService';
 import { adminExperienceService } from '../../services/adminService';
-import { Field, TextAreaField, Button, Card } from './components/ui.jsx';
+import { Field, TextAreaField, SelectField, Button, Card } from './components/ui.jsx';
 import { sortExperienceLatestFirst, sortRolesLatestFirst } from '../../utils/experienceSort';
 import { useToasts, ToastContainer } from './components/Toast.jsx';
 
 const EMPTY_ROLE = { role: '', startDate: '', endDate: '', description: '' };
-const EMPTY = { companyName: '', roles: [{ ...EMPTY_ROLE }], technologies: '' };
+const EMPTY = { companyName: '', workplaceType: '', location: '', roles: [{ ...EMPTY_ROLE }], technologies: '' };
 
 // Same "total time at this company" calculation used on the public
 // Experience section — spans earliest role start to latest role end (or
@@ -78,6 +78,8 @@ export default function AdminExperience() {
   const openEdit = (item) => {
     setEditing({
       ...item,
+      workplaceType: item.workplaceType || '',
+      location: item.location || '',
       technologies: (item.technologies || []).join(', '),
       roles: sortRolesLatestFirst(item.roles || []).map(r => ({
         ...r,
@@ -114,6 +116,8 @@ export default function AdminExperience() {
     try {
       const fd = new FormData();
       fd.append('companyName', editing.companyName);
+      fd.append('workplaceType', editing.workplaceType || '');
+      fd.append('location', editing.location || '');
       fd.append('technologies', editing.technologies);
       fd.append('roles', JSON.stringify(editing.roles));
       if (imageFile) fd.append('image', imageFile);
@@ -184,6 +188,13 @@ export default function AdminExperience() {
                       </span>
                     )}
                   </div>
+                  {(item.workplaceType || item.location) && (
+                    <p className="font-mono text-xs text-ink/40 mb-1">
+                      {item.workplaceType}
+                      {item.workplaceType && item.location && ' · '}
+                      {item.location}
+                    </p>
+                  )}
                   {(item.roles || []).map((r, i) => (
                     <p key={i} className="font-mono text-xs text-ink/50">{r.role}</p>
                   ))}
@@ -242,6 +253,19 @@ export default function AdminExperience() {
 
             <Field label="Company Name" value={editing.companyName}
               onChange={e => setEditing(f => ({ ...f, companyName: e.target.value }))} required />
+
+            <div className="grid grid-cols-2 gap-3">
+              <SelectField label="Workplace Type" value={editing.workplaceType || ''}
+                onChange={e => setEditing(f => ({ ...f, workplaceType: e.target.value }))}>
+                <option value="">Not set</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Onsite">Onsite</option>
+                <option value="Remote">Remote</option>
+              </SelectField>
+              <Field label="Location" value={editing.location || ''}
+                onChange={e => setEditing(f => ({ ...f, location: e.target.value }))}
+                placeholder="Chennai, Tamil Nadu" />
+            </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
