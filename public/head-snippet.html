@@ -1,0 +1,29 @@
+<!-- Put these in your <head>, in this order -->
+
+<!-- 1. Modern, auto light/dark favicon (Chrome, Edge, Firefox).
+      This single SVG has @media(prefers-color-scheme) built in, so it
+      swaps between a black B and a white B automatically as the user's
+      OS/browser theme changes — no JS needed. -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+<!-- 2. PNG fallbacks with the same auto-switch, for browsers that read
+      per-link media queries (Firefox, Safari) but not SVG favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-dark-32x32.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-dark-16x16.png" media="(prefers-color-scheme: dark)">
+
+<!-- 3. Classic .ico fallback for very old browsers -->
+<link rel="shortcut icon" href="/favicon.ico">
+
+<!-- 4. iOS home-screen icon — must be opaque (iOS fills transparent
+      areas with black), so this uses the original rounded-square mark -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- 5. Android/PWA icons, if you have a manifest.json -->
+<!--
+  In manifest.json:
+  "icons": [
+    { "src": "/favicon-light-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+-->
