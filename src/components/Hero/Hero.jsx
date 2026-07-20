@@ -63,7 +63,7 @@ export default function Hero() {
     >
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
         {/* Image — order 1 on mobile, right on desktop */}
-        <Reveal y={60} className="order-1 md:order-2 flex justify-center">
+        <Reveal y={60} eager className="order-1 md:order-2 flex justify-center">
           <motion.div
             animate={{ y: [0, -16, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
@@ -84,27 +84,27 @@ export default function Hero() {
 
         {/* Text */}
         <div className="order-2 md:order-1 text-center md:text-left">
-          <Reveal>
+          <Reveal eager>
             <p className="eyebrow mb-4">Hello, I&apos;m</p>
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal eager delay={0.08}>
             <h1 className="font-display font-extrabold leading-tight mb-3 break-words [text-wrap:balance] text-[clamp(1.75rem,6vw,3.75rem)]">
               {loading
                 ? <span className="inline-block w-48 h-10 glass rounded animate-pulse" />
                 : profile?.name || 'Your Name'}
             </h1>
           </Reveal>
-          <Reveal delay={0.14}>
+          <Reveal eager delay={0.14}>
             <h2 className="font-mono text-lg md:text-2xl gradient-text mb-5">
               {profile?.role || 'Full Stack Developer'}
             </h2>
           </Reveal>
-          <Reveal delay={0.2}>
+          <Reveal eager delay={0.2}>
             <p className="text-ink/70 max-w-xl mx-auto md:mx-0 mb-7 leading-relaxed">
               {profile?.description || ''}
             </p>
           </Reveal>
-          <Reveal delay={0.26}>
+          <Reveal eager delay={0.26}>
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
               {profile?.resumeFile && (
                 <button
