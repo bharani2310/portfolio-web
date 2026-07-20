@@ -58,7 +58,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="flex items-center px-6 md:px-12 lg:px-24 pt-16 md:pt-0 pb-10 md:pb-14"
+      className="flex items-start md:items-center px-6 md:px-12 lg:px-24 pt-16 md:pt-0 pb-10 md:pb-14"
       style={{ minHeight: '100dvh' }}
     >
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
