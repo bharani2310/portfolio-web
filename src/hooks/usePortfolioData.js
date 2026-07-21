@@ -29,7 +29,11 @@ export function usePortfolioData() {
     const fetchFresh = async () => {
       const res = await dataApi.get('/all');
       if (cancelled) return;
-      const version = res.headers?.['x-cache-updated-at'] ?? null;
+      // Body field, not a response header — custom headers like
+      // X-Cache-Updated-At aren't readable on cross-origin responses
+      // unless the server sends Access-Control-Expose-Headers, so we rely
+      // on generatedAt inside the JSON body instead (always readable).
+      const version = res.data?.generatedAt ?? null;
       setCache(CACHE_KEY, { payload: res.data, version });
       setData(res.data);
     };
